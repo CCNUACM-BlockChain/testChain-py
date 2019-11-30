@@ -1,4 +1,4 @@
-
+from twisted.internet import reactor
 import struct
 import json
 
@@ -7,6 +7,6 @@ class Message:
         self.msgType = msgType
         self.data = data
 
-    def send(self,connectionObj):
+    def safeSend(self,connectionObj):
         header = struct.pack("!1I", self.data.__len__())
-        connectionObj.transport.write(header + str(json.dumps(self)).encode())
+        reactor.callInThread(connectionObj.transport.write, header + str(json.dumps(self.__dict__)).encode())
