@@ -15,3 +15,6 @@ class PeerToPeerHelper:
     def run(self):
         self.serverEndPoint.listen(PeerToPeerServerProtocolFactory())
         reactor.run()
+        
+h=PeerToPeerHelper()
+h.run()

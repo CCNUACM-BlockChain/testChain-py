@@ -7,7 +7,7 @@ class Temp():
     pass
 
 class Message:
-    def __init__(self,data=Temp(),dataType):
+    def __init__(self,dataType='',data=Temp()):
         self.data = str(data.__dict__)
         self.host = Host.host_ip
         self.port = Host.host_port
