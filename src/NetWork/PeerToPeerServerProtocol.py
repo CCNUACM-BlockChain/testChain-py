@@ -19,7 +19,7 @@ class PeerToPeerServerProtocol(Protocol):
     def connectionMade(self):
         print('connected',self.transport.getPeer())
         self.factory.numPorts += 1
-        message.reset(Ping())
+        message.reset('ping')
         message.safeSend(self)
 
 
@@ -38,9 +38,6 @@ class PeerToPeerServerProtocol(Protocol):
             data = self.factory.dataBuffer[headerSize:headerSize + bodySize]
             self.factory.dataBuffer = self.factory.dataBuffer[headerSize + bodySize:]
             handleEvent(data,self)
-        
-        
-
         
 class PeerToPeerServerProtocolFactory(Factory):
     def __init__(self):

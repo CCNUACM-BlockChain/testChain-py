@@ -1,8 +1,10 @@
+import json
 from twisted.internet import reactor, threads, defer
 from twisted.internet.endpoints import TCP4ClientEndpoint, connectProtocol
 from twisted.internet.protocol import Protocol, ClientCreator
 from PeerToPeerClientProtocol import PeerToPeerClientProtocolFactory
 from dataModels.IpAddress import IpAddress
+from Message import Message
 
 """
 def tryConnected(info):
@@ -17,7 +19,11 @@ def verify(data,connection):
 """
 
 def handleEvent(data,connection):
-    if data.type == 'boardcast':
+    data = json.loads(data.decode())
+    print(data['dataType'])
+    message = Message(dataType=data['dataType'],host=data['host'],port=data['port'],data=data['data'])
+    return 
+    if message.dataType == 'boardcast':
         pass   
-    if data.type == 'verifyserver':
+    if message.dataType == 'verifyserver':
         connection.transport.abortConnection()
