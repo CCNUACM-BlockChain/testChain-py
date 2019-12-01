@@ -3,7 +3,7 @@ from twisted.internet import reactor
 from twisted.application import internet, service
 from twisted.internet.task import LoopingCall
 from twisted.protocols.basic import LineReceiver
-from twisted.internet.protocol import Factory, Protocol
+from twisted.internet.protocol import Factory, Protocol, ClientFactory
 from twisted.internet.endpoints import TCP4ServerEndpoint
 from twisted.internet.endpoints import TCP4ClientEndpoint, connectProtocol
 from Message import Message
@@ -19,8 +19,9 @@ class PeerToPeerClientProtocol(Protocol):
     def connectionMade(self):
         print('connected',self.transport.getPeer())
         self.factory.numPorts += 1
-        message.reset({},'ping')
+        message.reset('ping')
         message.safeSend(self)
+        self.stopProtocol()
 
 
     def connectionLost(self, reason):
@@ -39,10 +40,19 @@ class PeerToPeerClientProtocol(Protocol):
         
 
         
-class PeerToPeerClientProtocolFactory(Factory):
+class PeerToPeerClientProtocolFactory(ClientFactory):
     def __init__(self):
         self.numProtocol = 0
         self.dataBuffer = bytes()
 
+    def startedConnecting(self, connecter):
+        print('start Connecting')
+
     def buildProtocol(self,addr):
         return PeerToPeerClientProtocol(self)
+    
+    def clientConnectionFailed(self, connector, reason):
+        print('connected failed')
+    
+    def clientConnectionLost(self, connector, reason):
+        print("Connection failed. Reason:", reason)

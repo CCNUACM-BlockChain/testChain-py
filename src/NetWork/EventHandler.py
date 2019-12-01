@@ -5,18 +5,21 @@ from twisted.internet.protocol import Protocol, ClientCreator
 from PeerToPeerClientProtocol import PeerToPeerClientProtocolFactory
 from dataModels.IpAddress import IpAddress
 from Message import Message
+from tcp_latency import measure_latency
+from handler.BoardCastHandler import handleBoardCast
 
-"""
-def tryConnected(info):
-    clientFactory = PeerToPeerClientProtocolFactory()
-    reactor.connectTCP(info[1].host, info[1].port, clientFactory).addCallback()
+ccnu = 'ccnuacm-bocai.com'
+hport = 996
 
-def verify(data,connection):
-    verifyDeffer = defer.Deferred()
-    verifyDeffer.addCallback(tryConnected,connectedErrorHandler).addCallback(handleEvent,handleEventErroeHandler)
-    verifyDeffer.callback((data,Ip))
+def tryConnected(host,port):
+    latencyList = measure_latency(host=host, port=port, runs=3, timeout=2.5)
+    for latency in latencyList:
+        if latency != None:
+            return True
+    return False
 
-"""
+def verify(data):
+    return tryConnected(data.host,data.port)
 
 def handleEvent(data,connection):
     data = json.loads(data.decode())
@@ -27,3 +30,7 @@ def handleEvent(data,connection):
         pass   
     if message.dataType == 'verifyserver':
         connection.transport.abortConnection()
+
+
+tryConnected(ccnu,hport)
+reactor.run()
