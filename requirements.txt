@@ -10,5 +10,5 @@ leveldb==0.194
 merklelib==1.0
 PyHamcrest==1.9.0
 six==1.13.0
-Twisted==19.10.0
+Twisted==22.10.0
 zope.interface==4.7.1
